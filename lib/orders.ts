@@ -13,6 +13,11 @@ export interface CountsResponse {
   counts: StatusCounts;
   total: number;
   lastFetched: string;
+  /**
+   * False when the NikoHealth API isn't configured yet (no key/base URL).
+   * The dashboard treats this as an intentional empty state, not an error.
+   */
+  configured: boolean;
 }
 
 export const STATUS_KEYS: readonly StatusKey[] = [

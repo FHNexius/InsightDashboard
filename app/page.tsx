@@ -93,6 +93,23 @@ export default function DashboardPage() {
         </button>
       </header>
 
+      {data && !data.configured && !error && (
+        <div className="mb-6 rounded-md border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
+          <span className="font-semibold text-foreground">
+            Preview mode.
+          </span>{" "}
+          NikoHealth API not configured yet — set{" "}
+          <code className="rounded bg-background px-1 py-0.5 text-xs">
+            NIKO_API_KEY
+          </code>{" "}
+          and{" "}
+          <code className="rounded bg-background px-1 py-0.5 text-xs">
+            NIKO_API_BASE_URL
+          </code>{" "}
+          to show live counts.
+        </div>
+      )}
+
       {error && (
         <div
           role="alert"

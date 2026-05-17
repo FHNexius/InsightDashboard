@@ -48,6 +48,7 @@ function errorResponse(message: string, status: number) {
     counts: emptyCounts(),
     total: 0,
     lastFetched: new Date().toISOString(),
+    configured: true,
     error: message,
   };
   return NextResponse.json(body, {
@@ -61,13 +62,17 @@ export async function GET() {
   const baseUrl = process.env.NIKO_API_BASE_URL;
 
   if (!apiKey || !baseUrl) {
-    // Never echo the key; just report which config is missing.
-    console.error(
-      "[orders/counts] Missing config:",
-      !apiKey ? "NIKO_API_KEY" : "",
-      !baseUrl ? "NIKO_API_BASE_URL" : "",
-    );
-    return errorResponse("Server is not configured to reach NikoHealth.", 500);
+    // Not an error: the API simply isn't wired up yet. Return a clean empty
+    // state so the dashboard renders intentionally blank instead of broken.
+    const body: CountsResponse = {
+      counts: emptyCounts(),
+      total: 0,
+      lastFetched: new Date().toISOString(),
+      configured: false,
+    };
+    return NextResponse.json(body, {
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 
   const url = `${baseUrl.replace(/\/+$/, "")}${ORDERS_PATH}`;
@@ -127,6 +132,7 @@ export async function GET() {
     counts,
     total,
     lastFetched: new Date().toISOString(),
+    configured: true,
   };
 
   return NextResponse.json(body, {
